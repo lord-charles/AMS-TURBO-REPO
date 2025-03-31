@@ -64,6 +64,20 @@ import {
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 
+type ColorScheme = 'light' | 'dark' | 'system'
+type SidebarStyle = 'default' | 'minimal' | 'glass' | 'bordered'
+type HeaderStyle = 'default' | 'minimal' | 'elevated' | 'colored'
+
+interface SavedTheme {
+  id: string
+  name: string
+  colorScheme: ColorScheme
+  accentColor: string
+  borderRadius: number
+  sidebarStyle: SidebarStyle
+  headerStyle: HeaderStyle
+}
+
 export function DashboardSettings() {
   const {
     sidebarPosition,
@@ -131,9 +145,8 @@ export function DashboardSettings() {
 
     setIsSaving(true)
 
-    // Simulate a delay for saving
     setTimeout(() => {
-      const newTheme = {
+      const newTheme: SavedTheme = {
         id: Date.now().toString(),
         name: newThemeName,
         colorScheme,
@@ -143,7 +156,7 @@ export function DashboardSettings() {
         headerStyle,
       }
 
-      setSavedThemes((prev) => [...prev, newTheme])
+      setSavedThemes([...savedThemes, newTheme])
       setNewThemeName("")
       setShowThemeDialog(false)
       setIsSaving(false)

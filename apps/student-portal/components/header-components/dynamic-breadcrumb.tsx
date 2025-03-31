@@ -55,7 +55,7 @@ export function DynamicBreadcrumb({
   data,
   showVersion = true,
   version = "v2.0",
-}: DynamicBreadcrumbProps) {
+}: any) {
   const pathname = usePathname()
 
   // Find the current section and subsection based on pathname

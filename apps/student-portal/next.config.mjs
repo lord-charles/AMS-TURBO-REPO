@@ -16,6 +16,15 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  redirects: async () => {
+    return [
+      {
+        source: "/",
+        destination: "/dashboard",
+        permanent: false,
+      },
+    ];
+  },
   experimental: {
     webpackBuildWorker: true,
     parallelServerBuildTraces: true,

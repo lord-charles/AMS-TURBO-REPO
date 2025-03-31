@@ -12,11 +12,10 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { useDashboard } from "@/contexts/dashboard-context"
+import { useTheme } from "next-themes"
 
 export function PreferencesTab() {
   const {
-    colorScheme,
-    setColorScheme,
     headerStyle,
     setHeaderStyle,
     layoutDensity,
@@ -24,6 +23,8 @@ export function PreferencesTab() {
     sidebarPosition,
     setSidebarPosition,
   } = useDashboard()
+
+  const { theme ,setTheme } = useTheme()
 
   const [isSaving, setIsSaving] = useState(false)
   const [language, setLanguage] = useState("en")
@@ -34,19 +35,6 @@ export function PreferencesTab() {
   const [animationsEnabled, setAnimationsEnabled] = useState(true)
   const [highContrastMode, setHighContrastMode] = useState(false)
 
-  // Apply theme class to document
-  useEffect(() => {
-    const root = window.document.documentElement
-
-    if (colorScheme === "dark") {
-      root.classList.add("dark")
-    } else if (colorScheme === "light") {
-      root.classList.remove("dark")
-    } else if (colorScheme === "system") {
-      const systemPreference = window.matchMedia("(prefers-color-scheme: dark)").matches
-      systemPreference ? root.classList.add("dark") : root.classList.remove("dark")
-    }
-  }, [colorScheme])
 
   // Apply high contrast mode
   useEffect(() => {
@@ -72,7 +60,6 @@ export function PreferencesTab() {
   }
 
   function handleResetDefaults() {
-    setColorScheme("light")
     setHeaderStyle("minimal")
     setLayoutDensity("comfortable")
     setSidebarPosition("left")
@@ -103,9 +90,9 @@ export function PreferencesTab() {
             <h4 className="text-sm font-medium">Theme</h4>
             <p className="text-xs text-muted-foreground">Choose between light, dark, or system theme.</p>
             <RadioGroup
-              defaultValue={colorScheme}
-              value={colorScheme}
-              onValueChange={(value) => setColorScheme(value as "light" | "dark" | "system")}
+              defaultValue={theme}
+              value={theme}
+              onValueChange={(value) => setTheme(value as "light" | "dark" | "system")}
               className="grid grid-cols-3 gap-4 pt-2"
             >
               <div>

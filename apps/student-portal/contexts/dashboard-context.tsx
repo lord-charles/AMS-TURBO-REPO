@@ -143,17 +143,17 @@ export function DashboardProvider({
   const isReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)")
 
   // Apply color scheme on client side only
-  React.useEffect(() => {
-    const root = window.document.documentElement
-    root.classList.remove("light", "dark")
+  // React.useEffect(() => {
+  //   const root = window.document.documentElement
+  //   root.classList.remove("light", "dark")
 
-    if (colorScheme === "system") {
-      const systemScheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
-      root.classList.add(systemScheme)
-    } else {
-      root.classList.add(colorScheme)
-    }
-  }, [colorScheme])
+  //   if (colorScheme === "system") {
+  //     const systemScheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+  //     root.classList.add(systemScheme)
+  //   } else {
+  //     root.classList.add(colorScheme)
+  //   }
+  // }, [colorScheme])
 
   // Apply layout density
   React.useEffect(() => {
