@@ -1,9 +1,13 @@
-import React from 'react'
+import { GradesAndTranscriptsMain } from "@/app/sections/academic/grades/grades-and-transcripts-main";
+import { DashboardHeader } from "@/components/dashboard-header";
+import { DashboardLayout } from "@/components/dashboard-layout";
 
-export const page = () => {
+export default function GradesPage() {
   return (
-    <div>page</div>
+    <DashboardLayout>
+      <DashboardHeader />
+      <GradesAndTranscriptsMain />
+    </DashboardLayout>
   )
 }
 
-export default page

@@ -36,7 +36,7 @@ export function SpecialCases() {
       code: "CS301",
       name: "Data Structures & Algorithms",
       grade: "D",
-      semester: "Spring 2023",
+      semester: "Semester One",
       eligible: true,
     },
     {
@@ -44,7 +44,7 @@ export function SpecialCases() {
       code: "MATH201",
       name: "Discrete Mathematics",
       grade: "F",
-      semester: "Spring 2023",
+      semester: "Semester One",
       eligible: true,
     },
     {
@@ -52,7 +52,7 @@ export function SpecialCases() {
       code: "CS205",
       name: "Computer Networks",
       grade: "E",
-      semester: "Fall 2022",
+      semester: "Semester One",
       eligible: false,
     },
   ]
@@ -84,7 +84,6 @@ export function SpecialCases() {
 
   const handleApply = () => {
     setIsLoading(true)
-    // Simulate API call
     setTimeout(() => {
       setIsLoading(false)
       toast({

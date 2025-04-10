@@ -27,7 +27,7 @@ export function OverviewTab() {
     id: "STU2023001",
     program: "Bachelor of Computer Science",
     year: "3rd Year",
-    semester: "Fall 2023",
+    semester: "Second Semester",
     gpa: 3.7,
     creditsEarned: 86,
     creditsRequired: 120,
@@ -323,19 +323,7 @@ export function OverviewTab() {
     }
   }
 
-  // Get priority badge
-  const getPriorityBadge = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return <Badge variant="destructive">High Priority</Badge>;
-      case "medium":
-        return <Badge variant="secondary">Medium Priority</Badge>;
-      case "low":
-        return <Badge variant="outline">Low Priority</Badge>;
-      default:
-        return <Badge variant="outline">{priority}</Badge>;
-    }
-  }
+
 
   // Get activity icon
   const getActivityIcon = (type: string) => {
@@ -373,23 +361,6 @@ export function OverviewTab() {
     }
   }
 
-  // Get insight icon
-  const getInsightIcon = (type: string) => {
-    switch (type) {
-      case "improvement":
-        return <TrendingUp className="h-5 w-5 text-green-500" />;
-      case "strength":
-        return <Star className="h-5 w-5 text-amber-500" />;
-      case "pattern":
-        return <Lightbulb className="h-5 w-5 text-blue-500" />;
-      case "status":
-        return <Info className="h-5 w-5 text-purple-500" />;
-      case "opportunity":
-        return <Zap className="h-5 w-5 text-emerald-500" />;
-      default:
-        return <Info className="h-5 w-5 text-muted-foreground" />;
-    }
-  }
 
   // Simulate loading when refreshing
   const handleRefresh = () => {
@@ -439,7 +410,7 @@ export function OverviewTab() {
                 </div>
               </div>
               <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">Advisor</p>
+                <p className="text-sm text-muted-foreground">Mentor</p>
                 <p className="text-lg font-semibold">{studentInfo.advisor}</p>
               </div>
             </div>
@@ -832,7 +803,7 @@ export function OverviewTab() {
         </Card>
       </div>
 
-      {/* Next Advisor Meeting */}
+      {/* Next Mentor Meeting */}
       <Card className="bg-muted/30">
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -841,7 +812,7 @@ export function OverviewTab() {
                 <Calendar className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h3 className="text-lg font-medium">Next Advisor Meeting</h3>
+                <h3 className="text-lg font-medium">Next Mentor Meeting</h3>
                 <p className="text-sm text-muted-foreground">
                   {formatDate(studentInfo.nextAdvisorMeeting)} at {formatTime(studentInfo.nextAdvisorMeeting)} with {studentInfo.advisor}
                 </p>

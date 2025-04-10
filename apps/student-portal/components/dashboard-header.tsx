@@ -43,6 +43,7 @@ import { useTheme } from "next-themes"
 import { DynamicBreadcrumb } from "./header-components/dynamic-breadcrumb"
 import { data } from "./app-sidebar"
 import ThemeUpdate from "@/lib/theme/themeUpdate"
+import { MobileSidebar } from "./header-components/mobile/mobile-sidebar"
 
 export function DashboardHeader() {
   const {
@@ -572,111 +573,14 @@ export function DashboardHeader() {
       <CommandMenu open={showCommandMenu} onOpenChange={setShowCommandMenu} />
  
       {/* Mobile Menu */}
-      <Sheet open={showMobileMenu} onOpenChange={setShowMobileMenu}>
-        <SheetContent side="left" className="w-[80%] max-w-sm p-0">
-          <SheetHeader className="p-4 border-b">
-            <SheetTitle className="text-left">Menu</SheetTitle>
-            <SheetDescription className="text-left">Navigate to different sections of the dashboard.</SheetDescription>
-          </SheetHeader>
-          <ScrollArea className="h-[calc(100vh-100px)]">
-            <div className="py-4">
-              <div className="space-y-1 px-2">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-left"
-                  onClick={() => setShowMobileMenu(false)}
-                >
-                  <LayoutDashboard className="mr-2 h-4 w-4" />
-                  Dashboard
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-left"
-                  onClick={() => setShowMobileMenu(false)}
-                >
-                  <Layers className="mr-2 h-4 w-4" />
-                  Projects
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-left"
-                  onClick={() => setShowMobileMenu(false)}
-                >
-                  <Calendar className="mr-2 h-4 w-4" />
-                  Calendar
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-left"
-                  onClick={() => setShowMobileMenu(false)}
-                >
-                  <MessageSquare className="mr-2 h-4 w-4" />
-                  Messages
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-left"
-                  onClick={() => setShowMobileMenu(false)}
-                >
-                  <Users className="mr-2 h-4 w-4" />
-                  Team
-                </Button>
-              </div>
-
-              <Separator className="my-4" />
-
-              <div className="space-y-1 px-2">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-left"
-                  onClick={() => {
-                    setShowMobileMenu(false)
-                    setIsSettingsPanelOpen(true)
-                  }}
-                >
-                  <Settings className="mr-2 h-4 w-4" />
-                  Settings
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-left"
-                  onClick={() => setShowMobileMenu(false)}
-                >
-                  <HelpCircle className="mr-2 h-4 w-4" />
-                  Help & Support
-                </Button>
-              </div>
-
-              <Separator className="my-4" />
-
-              <div className="px-4 py-2">
-                <div className="flex items-center gap-4 mb-4">
-                  <Avatar>
-                    <AvatarImage src="/avatars/shadcn.jpg" alt="User" />
-                    <AvatarFallback>
-                      <User className="h-4 w-4" />
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="text-sm font-medium">shadcn</p>
-                    <p className="text-xs text-muted-foreground">m@example.com</p>
-                    <div className="flex items-center mt-1">
-                      <Badge variant="secondary" className="text-[10px] px-1 py-0 h-4">
-                        Admin
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
-                <Button variant="outline" className="w-full" onClick={() => setShowMobileMenu(false)}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Log out
-                </Button>
-              </div>
-            </div>
-          </ScrollArea>
-        </SheetContent>
-      </Sheet>
-
+      <MobileSidebar
+        open={showMobileMenu}
+        onOpenChange={setShowMobileMenu}
+        onSettingsOpen={() => {
+          setShowMobileMenu(false)
+          setIsSettingsPanelOpen(true)
+        }}
+      />
       {/* Mobile Search */}
       <Sheet open={showMobileSearch} onOpenChange={setShowMobileSearch}>
         <SheetContent side="top" className="h-[50vh]">

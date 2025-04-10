@@ -151,72 +151,64 @@ export const data = {
             },
           ],
         },
+      
         {
           title: "Grades & Transcripts",
           url: "/academic/grades",
           description: "Track semester grades, cumulative GPA, and request official or unofficial transcripts.",
-          items: [
-            {
-              title: "Semester Results",
-              url: "/academic/grades/semester",
-              description: "View your final grades for each semester.",
-            },
-            {
-              title: "Cumulative GPA",
-              url: "/academic/grades/gpa",
-              description: "Monitor academic performance and progress toward graduation.",
-            },
-            {
-              title: "Transcripts",
-              url: "/academic/grades/transcripts",
-              description: "Download official transcripts for employment or further studies.",
-            },
-          ],
-        },
-        {
-          title: "Academic Calendar",
-          url: "/academic/calendar",
-          description: "Stay updated with university key dates, semester start/end, exam periods, and holidays.",
         },
         {
           title: "Student Clearance",
           url: "/academic/clearance",
           description: "Complete clearance for graduation, transfers, and financial obligations.",
         },
-        {
-          title: "Research & Publications",
-          url: "/academic/research",
-          description: "Access university research, publish academic papers, and collaborate on projects.",
-        },
+        // {
+        //   title: "Research & Publications",
+        //   url: "/academic/research",
+        //   description: "Access university research, publish academic papers, and collaborate on projects.",
+        // },
       ],
     },
     // 3️⃣ Financials 💰
     {
       title: "Financials",
-      url: "/financials",
+      url: "/finance",
       icon: DollarSign,
       items: [
         {
-          title: "Fees & Payments",
-          url: "/financials/payments",
-          description: "Manage tuition payments, invoices, and financial statements.",
-          items: [
-            {
-              title: "Fee Statement",
-              url: "/financials/statement",
-              description: "View and download your tuition fee breakdown.",
-            },
-            {
-              title: "Payment Options",
-              url: "/financials/options",
-              description: "Mobile money, bank transfer, credit card, and online payments.",
-            },
-            {
-              title: "Scholarships & Financial Aid",
-              url: "/financials/scholarships",
-              description: "Apply for financial assistance and monitor your scholarship status.",
-            },
-          ],
+          title: "Overview",
+          url: "/finance/overview",
+          description: "View your financial summary and recent transactions.",
+        },
+        {
+          title: "Dashboard",
+          url: "/finance/dashboard",
+          description: "Detailed financial analytics and reports.",
+        },
+        {
+          title: "My Fees",
+          url: "/finance/my-fees",
+          description: "View and manage your tuition and other fees.",
+        },
+        {
+          title: "Make Payment",
+          url: "/finance/payments",
+          description: "Pay fees using various payment methods.",
+        },
+        {
+          title: "Fee Statements",
+          url: "/finance/statements",
+          description: "Access and download your fee statements.",
+        },
+        {
+          title: "Financial Clearance",
+          url: "/finance/clearance",
+          description: "Get financial clearance for various services.",
+        },
+        {
+          title: "Support",
+          url: "/finance/support",
+          description: "Get help with financial matters and inquiries.",
         },
       ],
     },
@@ -265,7 +257,7 @@ export const data = {
     },
     // 5️⃣ Communication & Support 📞
     {
-      title: "Communication & Support",
+      title: "Communication",
       url: "/support",
       icon: MessageSquare,
       items: [
@@ -471,19 +463,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     } as React.CSSProperties
   }, [animationsEnabled, animationSpeed])
 
-  // Get sidebar style classes based on sidebar style setting
-  const sidebarStyleClasses = React.useMemo(() => {
-    switch (sidebarStyle) {
-      case "minimal":
-        return "bg-background/95 backdrop-blur-sm border-0"
-      case "glass":
-        return "bg-background/20 backdrop-blur-xl border-0"
-      case "bordered":
-        return "bg-background border-r border-l"
-      default:
-        return "bg-sidebar border-r shadow-sm"
-    }
-  }, [sidebarStyle])
+
 
   // Highlight text that matches search query
   const highlightText = (text: string) => {
@@ -549,7 +529,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <span className="truncate">{highlightText(item.title)}</span>
                   <ChevronDown
                     className={cn(
-                      "h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180",
+                      "h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180",
                       item.isActive || hasActiveDescendant ? "text-primary" : "text-muted-foreground",
                     )}
                     style={getAnimationStyle}
@@ -610,7 +590,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               [section.title]: open,
             }))
           }
-          className="w-full group/collapsible"
+          className=" group/collapsible"
         >
           <CollapsibleTrigger asChild>
             <SidebarGroupLabel
@@ -978,4 +958,3 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     </Sidebar>
   )
 }
-

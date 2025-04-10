@@ -14,16 +14,16 @@ export function CourseAnnouncements({ courseId }: CourseAnnouncementsProps) {
   const announcements = [
     {
       id: "1",
-      title: "Midterm Exam Details",
+      title: "Semester One Exam Details",
       content:
-        "The midterm exam will be held on November 18th from 9:00 AM to 11:00 AM in Examination Hall 1. Please bring your student ID and arrive 15 minutes early. The exam will cover all material from weeks 1-6.",
+        "The exam will be held on November 18th from 9:00 AM to 11:00 AM in Examination Hall 1. Please bring your student ID and arrive 15 minutes early. The exam will cover all material from weeks 1-6.",
       date: "2023-11-10T10:30:00",
       author: "Dr. Sarah Johnson",
       important: true,
     },
     {
       id: "2",
-      title: "Assignment 2 Deadline Extended",
+      title: "Semester One Assignment 2 Deadline Extended",
       content:
         "Due to the technical issues with the submission system, the deadline for Assignment 2 has been extended to November 20th at 11:59 PM. Please make sure to submit your work before the new deadline.",
       date: "2023-11-08T14:15:00",
@@ -32,7 +32,7 @@ export function CourseAnnouncements({ courseId }: CourseAnnouncementsProps) {
     },
     {
       id: "3",
-      title: "Guest Lecture Next Week",
+      title: "Semester One Guest Lecture Next Week",
       content:
         "We will have a guest lecture by Prof. David Miller from Stanford University on November 22nd. The lecture will be on 'Advanced Algorithms in Industry' and will be held during our regular class time. Attendance is mandatory.",
       date: "2023-11-05T09:45:00",
