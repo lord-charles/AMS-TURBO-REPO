@@ -32,7 +32,6 @@ import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
 import { Dialog } from "@/components/ui/dialog"
 import { useToast } from "@/components/ui/use-toast"
-import { AssignmentSubmission } from "@/components/academic/exams/assignment-submission"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,6 +45,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { AssignmentSubmission } from "./assignment-submission"
 
 interface AssignmentsViewProps {
   searchQuery: string
@@ -806,12 +806,12 @@ export function AssignmentsView({ searchQuery, semester }: AssignmentsViewProps)
                 maxScore={selectedAssignment.maxScore}
                 isGroupAssignment={selectedAssignment.type === "group"}
                 groupMembers={selectedAssignment.groupMembers}
-                turnitinRequired={selectedAssignment.turnitinRequired}
-                submissionAttempts={selectedAssignment.submissionAttempts}
-                maxSubmissionAttempts={selectedAssignment.maxSubmissionAttempts}
-                lateSubmission={selectedAssignment.lateSubmission}
-                lateSubmissionPenalty={selectedAssignment.lateSubmissionPenalty}
-                rubric={selectedAssignment.rubric}
+                // turnitinRequired={selectedAssignment.turnitinRequired}
+                // submissionAttempts={selectedAssignment.submissionAttempts}
+                // maxSubmissionAttempts={selectedAssignment.maxSubmissionAttempts}
+                // lateSubmission={selectedAssignment.lateSubmission}
+                // lateSubmissionPenalty={selectedAssignment.lateSubmissionPenalty}
+                // rubric={selectedAssignment.rubric}
               />
             </Dialog>
           )}
@@ -908,13 +908,6 @@ function AssignmentCard({
                 <Progress
                   value={assignment.progress}
                   className="h-2"
-                  indicatorClassName={
-                    assignment.progress >= 70
-                      ? "bg-green-500"
-                      : assignment.progress >= 40
-                        ? "bg-amber-500"
-                        : "bg-red-500"
-                  }
                 />
               </div>
             )}

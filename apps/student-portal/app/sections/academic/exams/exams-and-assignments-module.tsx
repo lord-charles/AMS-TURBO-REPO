@@ -22,20 +22,19 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { AssignmentsView } from "@/components/academic/exams/assignments-view"
-import { ExamsView } from "@/components/academic/exams/exams-view"
-import { SpecialExamsView } from "@/components/academic/exams/special-exams-view"
-import { GradingSystemView } from "@/components/academic/exams/grading-system-view"
-import { PastPapersView } from "@/components/academic/exams/past-papers-view"
-import { useMediaQuery } from "@/hooks/use-media-query"
+import { ExamsView } from "./exams-view"
+import { AssignmentsView } from "./assignments-view"
+
+import { PastPapersView } from "./past-papers-view"
+import { GradingSystemView } from "./grading-system-view"
+import { SpecialExamsView } from "./special/special-exams-main"
 
 export function ExamsAndAssignmentsModule() {
   const [selectedSemester, setSelectedSemester] = useState("fall2023")
   const [searchQuery, setSearchQuery] = useState("")
-  const isMobile = useMediaQuery("(max-width: 768px)")
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-2">
       <Card className="border-blue-200 bg-blue-50 dark:bg-blue-950/20 dark:border-blue-800 mb-6">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
@@ -136,7 +135,7 @@ export function ExamsAndAssignmentsModule() {
         </TabsContent>
 
         <TabsContent value="special">
-          <SpecialExamsView searchQuery={searchQuery} semester={selectedSemester} />
+          <SpecialExamsView  />
         </TabsContent>
 
         <TabsContent value="past-papers">

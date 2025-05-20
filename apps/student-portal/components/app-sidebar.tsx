@@ -96,7 +96,7 @@ export const data = {
         },
         {
           title: "Student ID & Exam Card",
-          url: "/profile/documents",
+          url: "/documents",
           description:
             "Download your student ID, admission letter, enrollment verification, and other official documents.",
         },
@@ -213,71 +213,71 @@ export const data = {
       ],
     },
     // 4️⃣ Campus Resources 🏛
-    {
-      title: "Campus Resources",
-      url: "/campus",
-      icon: Building,
-      items: [
-        {
-          title: "Library & Research",
-          url: "/campus/library",
-          description: "Search digital and physical library collections, manage borrowed books, and pay fines.",
-        },
-        {
-          title: "Internships & Careers",
-          url: "/campus/careers",
-          description: "Explore job postings, internships, career mentorship, and resume-building services.",
-        },
-        {
-          title: "Clubs & Student Life",
-          url: "/campus/clubs",
-          description: "Join student organizations, participate in campus events, and build your leadership skills.",
-        },
-        {
-          title: "Housing & Accommodation",
-          url: "/campus/housing",
-          description: "Apply for university housing, check availability, and submit maintenance requests.",
-        },
-        {
-          title: "Health & Wellness Services",
-          url: "/campus/health",
-          description: "Access medical services, mental health support, and university health insurance information.",
-        },
-        {
-          title: "Alumni Network",
-          url: "/campus/alumni",
-          description: "Stay connected with alumni, find mentorship programs, and explore networking opportunities.",
-        },
-        {
-          title: "Transportation & Parking",
-          url: "/campus/transport",
-          description: "Check shuttle schedules, parking permits, and transportation services.",
-        },
-      ],
-    },
+    // {
+    //   title: "Campus Resources",
+    //   url: "/campus",
+    //   icon: Building,
+    //   items: [
+    //     {
+    //       title: "Library & Research",
+    //       url: "/campus/library",
+    //       description: "Search digital and physical library collections, manage borrowed books, and pay fines.",
+    //     },
+    //     {
+    //       title: "Internships & Careers",
+    //       url: "/campus/careers",
+    //       description: "Explore job postings, internships, career mentorship, and resume-building services.",
+    //     },
+    //     {
+    //       title: "Clubs & Student Life",
+    //       url: "/campus/clubs",
+    //       description: "Join student organizations, participate in campus events, and build your leadership skills.",
+    //     },
+    //     {
+    //       title: "Housing & Accommodation",
+    //       url: "/campus/housing",
+    //       description: "Apply for university housing, check availability, and submit maintenance requests.",
+    //     },
+    //     {
+    //       title: "Health & Wellness Services",
+    //       url: "/campus/health",
+    //       description: "Access medical services, mental health support, and university health insurance information.",
+    //     },
+    //     {
+    //       title: "Alumni Network",
+    //       url: "/campus/alumni",
+    //       description: "Stay connected with alumni, find mentorship programs, and explore networking opportunities.",
+    //     },
+    //     {
+    //       title: "Transportation & Parking",
+    //       url: "/campus/transport",
+    //       description: "Check shuttle schedules, parking permits, and transportation services.",
+    //     },
+    //   ],
+    // },
     // 5️⃣ Communication & Support 📞
-    {
-      title: "Communication",
-      url: "/support",
-      icon: MessageSquare,
-      items: [
-        {
-          title: "Announcements & Notices",
-          url: "/support/announcements",
-          description: "Stay informed with university-wide updates, academic news, and policy changes.",
-        },
-        {
-          title: "Messaging & Forums",
-          url: "/support/messaging",
-          description: "Engage in student discussions, communicate with faculty, and receive important messages.",
-        },
-        {
-          title: "Help Desk & Support",
-          url: "/support/helpdesk",
-          description: "Request assistance for academic, financial, or technical issues.",
-        },
-      ],
-    },
+    // {
+    //   title: "Communication",
+    //   url: "/support",
+    //   icon: MessageSquare,
+    //   items: [
+    //     {
+    //       title: "Announcements & Notices",
+    //       url: "/support/announcements",
+    //       description: "Stay informed with university-wide updates, academic news, and policy changes.",
+    //     },
+    //     {
+    //       title: "Messaging & Forums",
+    //       url: "/support/messaging",
+    //       description: "Engage in student discussions, communicate with faculty, and receive important messages.",
+    //     },
+    //     {
+    //       title: "Help Desk & Support",
+    //       url: "/support/helpdesk",
+    //       description: "Request assistance for academic, financial, or technical issues.",
+    //     },
+    //   ],
+    // },
   ],
 }
 
@@ -614,8 +614,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               />
             </SidebarGroupLabel>
           </CollapsibleTrigger>
-          <CollapsibleContent className="pt-1 space-y-1 ml-6">
-            <SidebarMenu>
+          <CollapsibleContent className="pt-1 ml-6">
+            <SidebarMenu className="space-y-1">
               {section.items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <NavItem item={item} sectionTitle={section.title} />
@@ -786,8 +786,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <TooltipTrigger asChild>
                   <Button
                     variant="ghost"
-                    size="icon"
-                    className={cn("h-8 w-8")}
                     size="icon"
                     className={cn("h-8 w-8 rounded-full", layoutDensity === "compact" && "h-7 w-7")}
                     onClick={() => {

@@ -40,7 +40,7 @@ export function AcademicSidebar({ className, ...props }: AcademicSidebarProps) {
       label: "Overview",
       icon: LayoutDashboard,
       href: "/academic/overview",
-      active: pathname === "/academic",
+      active: pathname === "/academic/overview",
     },
     {
       label: "My Courses",

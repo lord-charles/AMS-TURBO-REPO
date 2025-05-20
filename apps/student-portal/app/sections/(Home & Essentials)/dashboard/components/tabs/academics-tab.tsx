@@ -10,6 +10,7 @@ import {
   CheckCircle2,
   ChevronDown,
   Clock,
+  CreditCardIcon,
   Download,
   ExternalLink,
   Eye,
@@ -462,7 +463,6 @@ export function AcademicsTab() {
   // Handle file download (mock)
   const handleDownload = (id: string) => {
     setIsLoading(true)
-    // Simulate download delay
     setTimeout(() => {
       setIsLoading(false)
       console.log(`Downloading file with ID: ${id}`)
@@ -614,7 +614,7 @@ export function AcademicsTab() {
           {isLoading ? (
             <LoadingState />
           ) : (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
               {filteredCourses.length > 0 ? (
                 filteredCourses.map((course) => (
                   <Card key={course.id} className="overflow-hidden hover:shadow-md transition-shadow">
@@ -626,7 +626,6 @@ export function AcademicsTab() {
                           </CardTitle>
                           <CardDescription className="mt-1">Instructor: {course.instructor}</CardDescription>
                         </div>
-                        <Badge variant="outline">{course.credits} Credits</Badge>
                       </div>
                     </CardHeader>
                     <CardContent className="pb-2">
@@ -638,6 +637,11 @@ export function AcademicsTab() {
                         <div className="flex items-center text-sm">
                           <MapPin className="mr-2 h-4 w-4 text-muted-foreground" />
                           <span>{course.location}</span>
+                        </div>
+                        <div className="flex items-center text-sm">
+                          <CreditCardIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+                          <span>{course.credits} Credits
+                          </span>
                         </div>
                         <div>
                           <div className="flex items-center justify-between mb-1">

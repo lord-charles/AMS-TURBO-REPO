@@ -13,13 +13,12 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { AlertCircle, ArrowRight, BarChart3, Bell, BookOpen, Calendar, Check, ChevronRight, Clock, DollarSign, Download, ExternalLink, Eye, FileText, GraduationCap, HelpCircle, Info, Layers, Lightbulb, Loader2, MoreHorizontal, Pencil, Pin, PlusCircle, RefreshCw, Save, Search, Settings, Star, Trash2, TrendingUp, User, Zap } from 'lucide-react'
+import {ArrowRight, BarChart3, Bell, BookOpen, Calendar, ChevronRight, Clock, DollarSign, Download, ExternalLink, Eye, FileText, GraduationCap, Info, Layers, Loader2, MoreHorizontal, Pencil, RefreshCw, Search, Settings, Star, Trash2, TrendingUp, User } from 'lucide-react'
 
 export function OverviewTab() {
   const [isLoading, setIsLoading] = React.useState(false)
   const [showAnnouncementDetails, setShowAnnouncementDetails] = React.useState<string | null>(null)
-  const isMobile = useMediaQuery("(max-width: 640px)")
-  const isTablet = useMediaQuery("(max-width: 1024px)")
+
 
   // Mock data
   const studentInfo = {
@@ -38,7 +37,6 @@ export function OverviewTab() {
     lastLogin: "2023-07-19T08:45:00Z"
   }
 
-  // Mock upcoming deadlines
   const upcomingDeadlines = [
     {
       id: "deadline1",
@@ -77,7 +75,6 @@ export function OverviewTab() {
     }
   ]
 
-  // Mock recent activity
   const recentActivity = [
     {
       id: "activity1",
@@ -123,7 +120,6 @@ export function OverviewTab() {
     }
   ]
 
-  // Mock announcements
   const announcements = [
     {
       id: "announcement1",
@@ -371,9 +367,9 @@ export function OverviewTab() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Welcome and Stats Section */}
-      <div className="flex flex-col md:flex-row gap-6">
+      <div className="flex flex-col md:flex-row gap-3">
         <Card className="flex-1">
           <CardHeader className="pb-2">
             <div className="flex items-start justify-between">
@@ -419,7 +415,7 @@ export function OverviewTab() {
       </div>
 
       {/* Main Dashboard Grid */}
-      <div className="grid gap-6 md:grid-cols-2 ">
+      <div className="grid gap-3 md:grid-cols-2 ">
 
         {/* Quick Links Card */}
         <Card>
@@ -432,7 +428,7 @@ export function OverviewTab() {
               <Button
                 key={link.id}
                 variant="outline"
-                className="h-auto flex-col gap-2 p-4 justify-start hover:bg-muted/50 transition-colors"
+                className="h-auto flex-col gap-3 p-4 justify-start hover:bg-muted/50 transition-colors"
                 asChild
               >
                 <a href={link.url}>
@@ -533,176 +529,6 @@ export function OverviewTab() {
           </CardFooter>
         </Card>
 
-        {/* Upcoming Deadlines Card */}
-        <Card>
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-base font-medium">Upcoming Deadlines</CardTitle>
-              <Badge variant="outline" className="font-normal">
-                {upcomingDeadlines.length} items
-              </Badge>
-            </div>
-          </CardHeader>
-          <CardContent className="p-0">
-            <ScrollArea className="h-[320px]">
-              <div className="px-6 py-2">
-                {upcomingDeadlines.map((deadline) => (
-                  <div
-                    key={deadline.id}
-                    className={cn(
-                      "py-3 border-b last:border-0",
-                      deadline.priority === "high" && "relative"
-                    )}
-                  >
-                    {deadline.priority === "high" && (
-                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-red-500 rounded-full my-3"></div>
-                    )}
-                    <div className="flex items-start gap-3 pl-1">
-                      <div className="mt-0.5">
-                        {deadline.type === "exam" && (
-                          <div className="w-8 h-8 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center">
-                            <FileText className="h-4 w-4" />
-                          </div>
-                        )}
-                        {deadline.type === "assignment" && (
-                          <div className="w-8 h-8 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center">
-                            <Pencil className="h-4 w-4" />
-                          </div>
-                        )}
-                        {deadline.type === "administrative" && (
-                          <div className="w-8 h-8 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center">
-                            <Layers className="h-4 w-4" />
-                          </div>
-                        )}
-                        {deadline.type === "financial" && (
-                          <div className="w-8 h-8 rounded-full bg-green-500/10 text-green-500 flex items-center justify-center">
-                            <DollarSign className="h-4 w-4" />
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <h3 className="font-medium truncate">{deadline.title}</h3>
-                          {deadline.course && (
-                            <Badge variant="outline" className="ml-2 shrink-0">
-                              {deadline.course}
-                            </Badge>
-                          )}
-                        </div>
-                        <div className="flex items-center justify-between mt-1">
-                          <div className="flex items-center text-sm text-muted-foreground">
-                            <Calendar className="mr-1 h-3.5 w-3.5" />
-                            <span>{formatDate(deadline.dueDate)}</span>
-                            <span className="mx-1">•</span>
-                            <Clock className="mr-1 h-3.5 w-3.5" />
-                            <span>{formatTime(deadline.dueDate)}</span>
-                          </div>
-                          <Badge
-                            variant={deadline.priority === "high" ? "destructive" : "outline"}
-                            className="text-[10px] h-5 px-1.5"
-                          >
-                            {getDaysRemaining(deadline.dueDate)}
-                          </Badge>
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                          {deadline.description}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </ScrollArea>
-          </CardContent>
-          <CardFooter className="border-t p-3">
-            <Button variant="outline" size="sm" className="w-full" asChild>
-              <a href="/calendar">
-                <Calendar className="mr-2 h-4 w-4" />
-                View Full Calendar
-              </a>
-            </Button>
-          </CardFooter>
-        </Card>
-
-
-        {/* Academic Progress Card */}
-        <Card>
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-base font-medium">Academic Progress</CardTitle>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                      <Info className="h-4 w-4 text-muted-foreground" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="max-w-xs">Your progress toward degree completion based on credits earned.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between mb-1">
-              <div className="flex items-center gap-2">
-                <GraduationCap className="h-5 w-5 text-primary" />
-                <span className="text-sm font-medium">Degree Completion</span>
-              </div>
-              <span className="text-sm font-medium">
-                {Math.round((studentInfo.creditsEarned / studentInfo.creditsRequired) * 100)}%
-              </span>
-            </div>
-            <Progress
-              value={(studentInfo.creditsEarned / studentInfo.creditsRequired) * 100}
-              className="h-2"
-            />
-            <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
-              <div className="flex flex-col">
-                <span className="text-muted-foreground">Credits Earned</span>
-                <span className="font-medium">{studentInfo.creditsEarned}/{studentInfo.creditsRequired}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-muted-foreground">Current GPA</span>
-                <span className="font-medium">{studentInfo.gpa}/4.0</span>
-              </div>
-            </div>
-
-            <Separator className="my-4" />
-
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Core Requirements</span>
-                <span className="text-sm font-medium">80%</span>
-              </div>
-              <Progress value={80} className="h-1.5" />
-
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Major Electives</span>
-                <span className="text-sm font-medium">75%</span>
-              </div>
-              <Progress value={75} className="h-1.5" />
-
-              <div className="flex items-center justify-between">
-                <span className="text-sm">General Education</span>
-                <span className="text-sm font-medium">90%</span>
-              </div>
-              <Progress value={90} className="h-1.5" />
-            </div>
-
-            <div className="mt-10">
-              <Button variant="outline" size="sm" className="w-full" asChild>
-                <a href="/academics/audit">
-                  <FileText className="mr-2 h-4 w-4" />
-                  View Degree Audit
-                </a>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-
         {/* Announcements Card */}
         <Card className="lg:col-span-2">
           <CardHeader>
@@ -726,7 +552,7 @@ export function OverviewTab() {
                   announcement.priority === "high" && "border-l-4 border-l-red-500"
                 )}
               >
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-3 mb-2">
                   {announcement.priority === "high" && (
                     <Badge variant="destructive">Important</Badge>
                   )}
@@ -758,7 +584,7 @@ export function OverviewTab() {
                     </DialogTrigger>
                     <DialogContent className="max-w-2xl">
                       <DialogHeader>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-3">
                           {announcement.priority === "high" && (
                             <Badge variant="destructive">Important</Badge>
                           )}
@@ -821,7 +647,7 @@ export function OverviewTab() {
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2 w-full md:w-auto">
+            <div className="flex items-center gap-3 w-full md:w-auto">
               <Button variant="outline" className="flex-1 md:flex-none">
                 <Pencil className="mr-2 h-4 w-4" />
                 Reschedule

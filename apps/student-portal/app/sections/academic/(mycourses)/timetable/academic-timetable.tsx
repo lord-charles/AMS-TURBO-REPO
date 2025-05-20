@@ -1,5 +1,4 @@
-"use client"
-
+'use client'
 import { useState } from "react"
 import { Bell, Building, CalendarDays, Clock, Download, List, Search, Settings } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -12,7 +11,6 @@ import { TimetableFilters } from "./timetable-filters"
 import { TimetableUpdates } from "./timetable-updates"
 import { TimetableRoomDetails } from "./timetable-room-details"
 import { TimetableFacultyDetails } from "./timetable-faculty-details"
-import { useMediaQuery } from "@/hooks/use-media-query"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -25,7 +23,6 @@ export function AcademicTimetable() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedSemester, setSelectedSemester] = useState("fall2023")
   const [selectedWeek, setSelectedWeek] = useState("current")
-  const isMobile = useMediaQuery("(max-width: 768px)")
   const { toast } = useToast()
 
   const handleExport = (format: string) => {
@@ -40,7 +37,6 @@ export function AcademicTimetable() {
       title: "Print Initiated",
       description: "Your timetable is being prepared for printing.",
     })
-    // In a real implementation, this would trigger the print dialog
     window.print && window.print()
   }
 
@@ -52,20 +48,6 @@ export function AcademicTimetable() {
           <p className="text-muted-foreground">
             View your personalized class schedule, lectures, and academic timetable
           </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Select value={selectedSemester} onValueChange={setSelectedSemester}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select semester" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="fall2023">Fall 2023</SelectItem>
-              <SelectItem value="spring2024">Spring 2024</SelectItem>
-              <SelectItem value="summer2024">Summer 2024</SelectItem>
-              <SelectItem value="fall2024">Fall 2024</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
       </div>
 

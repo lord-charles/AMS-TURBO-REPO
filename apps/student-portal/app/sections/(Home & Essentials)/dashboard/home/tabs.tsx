@@ -19,16 +19,12 @@ import { Card } from "@/components/ui/card"
 export default function DashboardModule() {
   const [activeTab, setActiveTab] = React.useState("overview")
   const isMobile = useMediaQuery("(max-width: 768px)")
-  const isSmallScreen = useMediaQuery("(max-width: 640px)")
 
-  // Handle tab change
   const handleTabChange = (value: string) => {
     setActiveTab(value)
-    // Update URL without navigation
     window.history.pushState({}, "", `/dashboard${value !== "overview" ? `?tab=${value}` : ""}`)
   }
 
-  // Set initial tab based on URL on component mount
   React.useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search)
     const tabFromQuery = searchParams.get('tab')
@@ -58,14 +54,13 @@ export default function DashboardModule() {
         <div className="sticky top-[var(--header-height)] z-20 bg-background pt-2">
           <div className="flex flex-col gap-3">
           
-            {/* Navigation Tabs */}
             <ScrollArea className="w-full">
               <TabsList className={cn(
                 "h-auto bg-card/50 backdrop-blur-sm rounded-xl p-2 shadow-sm border justify-between gap-4",
                 isMobile ? "w-[max-content] min-w-full" : "w-full"
               )}>
                  <Link 
-                href="/academic" 
+                href="/dashboard" 
                 className="flex items-center gap-2 group hover:text-primary transition-colors"
               >
                 <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
@@ -99,7 +94,7 @@ export default function DashboardModule() {
                     {item.badge && (
                       <Badge
                         variant="secondary"
-                        className="absolute -top-1 -right-1 h-5 px-1.5 text-xs font-medium bg-primary text-primary-foreground animate-pulse"
+                        className="z-50 absolute -top-1 -right-2 h-5 px-1.5 text-xs font-medium bg-primary text-primary-foreground animate-pulse"
                       >
                         {item.badge}
                       </Badge>
@@ -115,7 +110,7 @@ export default function DashboardModule() {
 
         <TabsContent 
           value="overview" 
-          className="animate-in fade-in-50 data-[state=inactive]:animate-out data-[state=inactive]:fade-out-0 data-[state=active]:duration-300"
+          className="animate-in fade-in-50 data-[state=inactive]:animate-out data-[state=inactive]:fade-out-0 data-[state=active]:duration-300 px-0.5"
         >
           <OverviewTab />
         </TabsContent>

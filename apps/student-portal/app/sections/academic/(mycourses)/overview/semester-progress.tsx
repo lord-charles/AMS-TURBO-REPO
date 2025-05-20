@@ -9,16 +9,16 @@ export function SemesterProgress() {
   // Calculate days remaining in semester
   const today = new Date()
   const semesterEnd = new Date("2023-12-15")
-  const totalDays = 120 // Typical semester length
+  const totalDays = 120 
   const daysElapsed = Math.floor((today.getTime() - new Date("2023-09-01").getTime()) / (1000 * 60 * 60 * 24))
   const daysRemaining = Math.max(0, Math.floor((semesterEnd.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)))
   const progressPercentage = Math.min(100, Math.round((daysElapsed / totalDays) * 100))
 
   // Key semester milestones
   const milestones = [
-    { name: "Add/Drop Deadline", date: "September 15, 2023", completed: true },
-    { name: "Midterm Exams", date: "October 20-27, 2023", completed: true },
-    { name: "Course Withdrawal Deadline", date: "November 10, 2023", completed: false },
+    { name: "Course/Units Registration", date: "September 15, 2023", completed: true },
+    { name: "Assignments", date: "September 30, 2023", completed: true },
+    { name: "Cats Exams", date: "October 20-27, 2023", completed: true },
     { name: "Final Exams", date: "December 8-15, 2023", completed: false },
   ]
 
@@ -27,7 +27,7 @@ export function SemesterProgress() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Calendar className="h-5 w-5 text-primary" />
-          Fall 2023 Semester Progress
+           2023 Semester Two Progress
         </CardTitle>
         <CardDescription>Track your progress through the current semester</CardDescription>
       </CardHeader>
@@ -56,7 +56,7 @@ export function SemesterProgress() {
 
         <div className="space-y-2">
           <div className="text-sm font-medium">Key Milestones</div>
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {milestones.map((milestone, index) => (
               <div key={index} className="flex justify-between items-center">
                 <div className="flex items-center gap-2">

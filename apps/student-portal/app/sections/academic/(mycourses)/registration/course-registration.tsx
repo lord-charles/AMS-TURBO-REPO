@@ -1,6 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { Label } from "@/components/ui/label"
+
+import { useState, useEffect } from "react"
 import {
   AlertCircle,
   ArrowRight,
@@ -16,6 +18,11 @@ import {
   ShoppingCart,
   User,
   X,
+  Filter,
+  ChevronUp,
+  Bookmark,
+  BookMarked,
+  ListFilter,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -23,8 +30,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import {
   Dialog,
   DialogContent,
@@ -37,6 +42,31 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from "@/components/ui/use-toast"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  SheetFooter,
+  SheetClose,
+} from "@/components/ui/sheet"
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 export function CourseRegistration() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -44,7 +74,26 @@ export function CourseRegistration() {
   const [levelFilter, setLevelFilter] = useState("all")
   const [cartItems, setCartItems] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [showFilters, setShowFilters] = useState(false)
+  const [savedCourses, setSavedCourses] = useState<string[]>([])
+  const [showScrollToTop, setShowScrollToTop] = useState(false)
   const { toast } = useToast()
+  const isMobile = useIsMobile()
+
+  // Monitor scroll position to show/hide scroll-to-top button
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollToTop(window.scrollY > 300)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  // Scroll to top function
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
 
   // Mock available courses data
   const availableCourses = [
@@ -157,6 +206,9 @@ export function CourseRegistration() {
   // Check if a course is in the cart
   const isInCart = (courseId: string) => cartItems.includes(courseId)
 
+  // Check if a course is saved
+  const isSaved = (courseId: string) => savedCourses.includes(courseId)
+
   // Add course to cart
   const addToCart = (courseId: string) => {
     if (!isInCart(courseId)) {
@@ -175,6 +227,23 @@ export function CourseRegistration() {
       title: "Course removed from cart",
       description: "The course has been removed from your registration cart.",
     })
+  }
+
+  // Toggle saved course
+  const toggleSavedCourse = (courseId: string) => {
+    if (isSaved(courseId)) {
+      setSavedCourses(savedCourses.filter((id) => id !== courseId))
+      toast({
+        title: "Course removed from saved",
+        description: "The course has been removed from your saved courses.",
+      })
+    } else {
+      setSavedCourses([...savedCourses, courseId])
+      toast({
+        title: "Course saved",
+        description: "The course has been saved for later reference.",
+      })
+    }
   }
 
   // Get cart courses
@@ -197,29 +266,147 @@ export function CourseRegistration() {
     }, 2000)
   }
 
-  return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Course Registration</h1>
-          <p className="text-muted-foreground">Browse and register for courses for the upcoming semester</p>
+  // Get instructor initials for avatar
+  const getInstructorInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((part) => part[0])
+      .join("")
+      .toUpperCase()
+      .substring(0, 2)
+  }
+
+  // Render cart content for reuse in different places
+  const renderCartContent = () => (
+    <div className="space-y-4">
+      {cartCourses.length > 0 ? (
+        <>
+          <ScrollArea className={isMobile ? "h-[300px]" : "h-auto max-h-[500px]"}>
+            <div className="space-y-3">
+              {cartCourses.map((course) => (
+                <div key={course.id} className="flex items-center justify-between gap-2 p-2 border rounded-md">
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium truncate">
+                      {course.code}: {course.name}
+                    </div>
+                    <div className="text-xs text-muted-foreground">{course.schedule}</div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="icon" onClick={() => removeFromCart(course.id)}>
+                      <X className="h-4 w-4 text-destructive" />
+                      <span className="sr-only">Remove {course.code}</span>
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+
+          <div className="flex justify-between items-center pt-3 border-t">
+            <div className="text-sm">
+              <span className="font-medium">Total Credits:</span> {totalCredits}
+            </div>
+            <div className="text-sm">
+              <span className="font-medium">Total Courses:</span> {cartCourses.length}
+            </div>
+          </div>
+
+          <div className="flex justify-between gap-2 pt-2">
+            <Button variant="outline" size="sm" onClick={() => setCartItems([])}>
+              Clear Cart
+            </Button>
+            <Button size="sm" onClick={handleRegister} disabled={cartCourses.length === 0 || isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <Check className="mr-2 h-4 w-4" />
+                  Complete Registration
+                </>
+              )}
+            </Button>
+          </div>
+        </>
+      ) : (
+        <div className="flex flex-col items-center justify-center py-8 px-4">
+          <ShoppingCart className="h-10 w-10 text-muted-foreground mb-3" />
+          <h3 className="text-base font-medium">Your Cart is Empty</h3>
+          <p className="text-sm text-muted-foreground mt-1 text-center">
+            Browse the available courses and add them to your cart to register.
+          </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" asChild>
-            <a href="/academic/timetable">
-              <Calendar className="mr-2 h-4 w-4" />
-              View Timetable
-            </a>
-          </Button>
-          <Button variant="default" asChild>
-            <a href="#registration-cart">
-              <ShoppingCart className="mr-2 h-4 w-4" />
-              Registration Cart ({cartItems.length})
-            </a>
-          </Button>
+      )}
+    </div>
+  )
+
+  return (
+    <div className="space-y-6 pb-20">
+      {/* Header Section */}
+      <div className="sticky top-0 z-10 bg-background pt-4 pb-2 border-b">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">Course Registration</h1>
+            <p className="text-muted-foreground">Browse and register for courses for the upcoming semester</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" asChild size="sm">
+              <a href="/academic/timetable">
+                <Calendar className="mr-2 h-4 w-4" />
+                Timetable
+              </a>
+            </Button>
+
+            {isMobile ? (
+              <Drawer>
+                <DrawerTrigger asChild>
+                  <Button variant="default" size="sm">
+                    <ShoppingCart className="mr-2 h-4 w-4" />
+                    Cart ({cartItems.length})
+                  </Button>
+                </DrawerTrigger>
+                <DrawerContent>
+                  <DrawerHeader>
+                    <DrawerTitle>Registration Cart</DrawerTitle>
+                    <DrawerDescription>Review your selected courses</DrawerDescription>
+                  </DrawerHeader>
+                  <div className="px-4">{renderCartContent()}</div>
+                  <DrawerFooter>
+                    <DrawerClose asChild>
+                      <Button variant="outline">Close</Button>
+                    </DrawerClose>
+                  </DrawerFooter>
+                </DrawerContent>
+              </Drawer>
+            ) : (
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="default" size="sm">
+                    <ShoppingCart className="mr-2 h-4 w-4" />
+                    Cart ({cartItems.length})
+                  </Button>
+                </SheetTrigger>
+                <SheetContent className="w-[450px] sm:w-[540px]">
+                  <SheetHeader>
+                    <SheetTitle>Registration Cart</SheetTitle>
+                    <SheetDescription>Review your selected courses before finalizing registration</SheetDescription>
+                  </SheetHeader>
+                  <div className="mt-6">{renderCartContent()}</div>
+                  <SheetFooter className="mt-4">
+                    <SheetClose asChild>
+                      <Button variant="outline">Close</Button>
+                    </SheetClose>
+                  </SheetFooter>
+                </SheetContent>
+              </Sheet>
+            )}
+          </div>
         </div>
       </div>
 
+      {/* Alert Section */}
       <Alert>
         <AlertCircle className="h-4 w-4" />
         <AlertTitle>Registration Period</AlertTitle>
@@ -229,282 +416,491 @@ export function CourseRegistration() {
         </AlertDescription>
       </Alert>
 
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="relative w-full sm:w-[300px]">
-          <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Search courses..."
-            className="w-full pl-8"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+      {/* Search and Filter Section */}
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="relative w-full sm:w-[300px]">
+            <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Search courses..."
+              className="w-full pl-8"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          {isMobile ? (
+            <Button variant="outline" className="w-full sm:w-auto" onClick={() => setShowFilters(!showFilters)}>
+              <Filter className="mr-2 h-4 w-4" />
+              Filters
+            </Button>
+          ) : (
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+                <SelectTrigger className="w-full sm:w-[180px]">
+                  <SelectValue placeholder="Department" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Departments</SelectItem>
+                  <SelectItem value="Computer Science">Computer Science</SelectItem>
+                  <SelectItem value="Mathematics">Mathematics</SelectItem>
+                  <SelectItem value="English">English</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={levelFilter} onValueChange={setLevelFilter}>
+                <SelectTrigger className="w-full sm:w-[120px]">
+                  <SelectValue placeholder="Level" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Levels</SelectItem>
+                  <SelectItem value="100">100 Level</SelectItem>
+                  <SelectItem value="200">200 Level</SelectItem>
+                  <SelectItem value="300">300 Level</SelectItem>
+                  <SelectItem value="400">400 Level</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
-            <SelectTrigger className="w-full sm:w-[180px]">
-              <SelectValue placeholder="Department" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Departments</SelectItem>
-              <SelectItem value="Computer Science">Computer Science</SelectItem>
-              <SelectItem value="Mathematics">Mathematics</SelectItem>
-              <SelectItem value="English">English</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={levelFilter} onValueChange={setLevelFilter}>
-            <SelectTrigger className="w-full sm:w-[120px]">
-              <SelectValue placeholder="Level" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Levels</SelectItem>
-              <SelectItem value="100">100 Level</SelectItem>
-              <SelectItem value="200">200 Level</SelectItem>
-              <SelectItem value="300">300 Level</SelectItem>
-              <SelectItem value="400">400 Level</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold">Available Courses</h2>
-
-        {filteredCourses.length > 0 ? (
-          <div className="space-y-4">
-            {filteredCourses.map((course) => (
-              <Card key={course.id} className="overflow-hidden">
-                <CardHeader className="pb-2">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <CardTitle className="text-lg">
-                          <span className="text-primary font-bold">{course.code}</span>: {course.name}
-                        </CardTitle>
-                        <Badge variant="outline">{course.credits} Credits</Badge>
-                      </div>
-                      <CardDescription className="mt-1">
-                        {course.department} • Level {course.level}
-                      </CardDescription>
-                    </div>
-                    <Badge variant={course.seats.available > 10 ? "outline" : "secondary"}>
-                      {course.seats.available} Seats Available
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="pb-2">
-                  <div className="space-y-3">
-                    <div className="flex items-center text-sm">
-                      <User className="mr-2 h-4 w-4 text-muted-foreground" />
-                      <span>Instructor: {course.instructor}</span>
-                    </div>
-                    <div className="flex items-center text-sm">
-                      <Clock className="mr-2 h-4 w-4 text-muted-foreground" />
-                      <span>{course.schedule}</span>
-                    </div>
-                    <div className="flex items-center text-sm">
-                      <MapPin className="mr-2 h-4 w-4 text-muted-foreground" />
-                      <span>{course.location}</span>
-                    </div>
-
-                    {course.prerequisites.length > 0 && (
-                      <div className="flex items-start text-sm">
-                        <Info className="mr-2 h-4 w-4 text-muted-foreground mt-0.5" />
-                        <div>
-                          <span className="font-medium">Prerequisites: </span>
-                          <span>{course.prerequisites.join(", ")}</span>
-                        </div>
-                      </div>
-                    )}
-
-                    <Accordion type="single" collapsible className="w-full">
-                      <AccordionItem value="description">
-                        <AccordionTrigger className="text-sm py-1">Course Description</AccordionTrigger>
-                        <AccordionContent>
-                          <p className="text-sm">{course.description}</p>
-                        </AccordionContent>
-                      </AccordionItem>
-                    </Accordion>
-                  </div>
-                </CardContent>
-                <CardFooter className="flex justify-between pt-2">
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" size="sm">
-                        <Info className="mr-2 h-4 w-4" />
-                        Course Details
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[500px]">
-                      <DialogHeader>
-                        <DialogTitle>
-                          {course.code}: {course.name}
-                        </DialogTitle>
-                        <DialogDescription>
-                          {course.department} • Level {course.level} • {course.credits} Credits
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="space-y-4 py-4">
-                        <p className="text-sm">{course.description}</p>
-                        <Separator />
-                        <div className="space-y-2">
-                          <div className="flex items-center text-sm">
-                            <User className="mr-2 h-4 w-4 text-muted-foreground" />
-                            <span>Instructor: {course.instructor}</span>
-                          </div>
-                          <div className="flex items-center text-sm">
-                            <Clock className="mr-2 h-4 w-4 text-muted-foreground" />
-                            <span>{course.schedule}</span>
-                          </div>
-                          <div className="flex items-center text-sm">
-                            <MapPin className="mr-2 h-4 w-4 text-muted-foreground" />
-                            <span>{course.location}</span>
-                          </div>
-                          <div className="flex items-center text-sm">
-                            <GraduationCap className="mr-2 h-4 w-4 text-muted-foreground" />
-                            <span>
-                              Seats: {course.seats.available} of {course.seats.total} available
-                            </span>
-                          </div>
-                        </div>
-                        {course.prerequisites.length > 0 && (
-                          <>
-                            <Separator />
-                            <div className="space-y-1">
-                              <h4 className="text-sm font-medium">Prerequisites</h4>
-                              <ul className="text-sm space-y-1">
-                                {course.prerequisites.map((prereq) => (
-                                  <li key={prereq} className="flex items-start">
-                                    <ArrowRight className="mr-2 h-4 w-4 text-muted-foreground mt-0.5" />
-                                    <span>{prereq}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                      <DialogFooter>
-                        {isInCart(course.id) ? (
-                          <Button variant="destructive" onClick={() => removeFromCart(course.id)}>
-                            <X className="mr-2 h-4 w-4" />
-                            Remove from Cart
-                          </Button>
-                        ) : (
-                          <Button onClick={() => addToCart(course.id)}>
-                            <ShoppingCart className="mr-2 h-4 w-4" />
-                            Add to Cart
-                          </Button>
-                        )}
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-
-                  {isInCart(course.id) ? (
-                    <Button variant="destructive" size="sm" onClick={() => removeFromCart(course.id)}>
-                      <X className="mr-2 h-4 w-4" />
-                      Remove from Cart
-                    </Button>
-                  ) : (
-                    <Button variant="default" size="sm" onClick={() => addToCart(course.id)}>
-                      <ShoppingCart className="mr-2 h-4 w-4" />
-                      Add to Cart
-                    </Button>
-                  )}
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-12 px-4 border rounded-lg bg-muted/30">
-            <BookOpen className="h-12 w-12 text-muted-foreground mb-3" />
-            <h3 className="text-lg font-medium">No Courses Found</h3>
-            <p className="text-sm text-muted-foreground mt-1 text-center">
-              No courses match your search criteria. Try adjusting your filters.
-            </p>
-          </div>
-        )}
-      </div>
-
-      <div id="registration-cart" className="space-y-4 pt-6">
-        <h2 className="text-xl font-semibold">Registration Cart</h2>
-
-        {cartCourses.length > 0 ? (
-          <Card>
-            <CardHeader>
-              <CardTitle>Selected Courses</CardTitle>
-              <CardDescription>Review your selected courses before finalizing registration</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Course Code</TableHead>
-                    <TableHead>Course Name</TableHead>
-                    <TableHead>Credits</TableHead>
-                    <TableHead>Schedule</TableHead>
-                    <TableHead>Action</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {cartCourses.map((course) => (
-                    <TableRow key={course.id}>
-                      <TableCell className="font-medium">{course.code}</TableCell>
-                      <TableCell>{course.name}</TableCell>
-                      <TableCell>{course.credits}</TableCell>
-                      <TableCell className="text-sm">{course.schedule}</TableCell>
-                      <TableCell>
-                        <Button variant="ghost" size="icon" onClick={() => removeFromCart(course.id)}>
-                          <X className="h-4 w-4 text-destructive" />
-                          <span className="sr-only">Remove {course.code}</span>
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-
-              <div className="flex justify-between items-center mt-4 pt-4 border-t">
-                <div className="text-sm">
-                  <span className="font-medium">Total Credits:</span> {totalCredits}
-                </div>
-                <div className="text-sm">
-                  <span className="font-medium">Total Courses:</span> {cartCourses.length}
-                </div>
+        {/* Mobile Filters */}
+        {isMobile && showFilters && (
+          <div className="p-4 border rounded-lg bg-muted/20 space-y-3">
+            <h3 className="text-sm font-medium flex items-center">
+              <ListFilter className="mr-2 h-4 w-4" />
+              Filter Courses
+            </h3>
+            <div className="grid gap-3">
+              <div className="grid gap-1">
+                <Label htmlFor="mobile-department" className="text-xs">
+                  Department
+                </Label>
+                <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+                  <SelectTrigger id="mobile-department">
+                    <SelectValue placeholder="Department" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Departments</SelectItem>
+                    <SelectItem value="Computer Science">Computer Science</SelectItem>
+                    <SelectItem value="Mathematics">Mathematics</SelectItem>
+                    <SelectItem value="English">English</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-              <Button variant="outline" onClick={() => setCartItems([])}>
-                Clear Cart
-              </Button>
-              <Button onClick={handleRegister} disabled={cartCourses.length === 0 || isLoading}>
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <Check className="mr-2 h-4 w-4" />
-                    Complete Registration
-                  </>
-                )}
-              </Button>
-            </CardFooter>
-          </Card>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-12 px-4 border rounded-lg bg-muted/30">
-            <ShoppingCart className="h-12 w-12 text-muted-foreground mb-3" />
-            <h3 className="text-lg font-medium">Your Cart is Empty</h3>
-            <p className="text-sm text-muted-foreground mt-1 text-center">
-              Browse the available courses and add them to your cart to register.
-            </p>
+              <div className="grid gap-1">
+                <Label htmlFor="mobile-level" className="text-xs">
+                  Level
+                </Label>
+                <Select value={levelFilter} onValueChange={setLevelFilter}>
+                  <SelectTrigger id="mobile-level">
+                    <SelectValue placeholder="Level" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Levels</SelectItem>
+                    <SelectItem value="100">100 Level</SelectItem>
+                    <SelectItem value="200">200 Level</SelectItem>
+                    <SelectItem value="300">300 Level</SelectItem>
+                    <SelectItem value="400">400 Level</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
           </div>
         )}
       </div>
+
+      {/* Course Listing Section */}
+      <div className="space-y-4">
+       
+
+        <Tabs defaultValue="grid" className="w-full">
+          <div className="flex justify-between mb-4">
+          <div className="flex items-center space-x-2">
+          <h2 className="text-xl font-semibold">Available Courses</h2>
+          <Badge variant="outline" className="text-xs">
+            {filteredCourses.length} courses found
+          </Badge>
+        </div>
+            <TabsList className="grid w-[180px] grid-cols-2">
+              <TabsTrigger value="grid">Grid View</TabsTrigger>
+              <TabsTrigger value="list">List View</TabsTrigger>
+            </TabsList>
+          </div>
+
+          <TabsContent value="grid" className="mt-0">
+            {filteredCourses.length > 0 ? (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {filteredCourses.map((course) => (
+                  <Card key={course.id} className="overflow-hidden h-full flex flex-col">
+                    <CardHeader className="pb-2">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <CardTitle className="text-lg truncate">
+                              <span className="text-primary font-bold">{course.code}</span>
+                            </CardTitle>
+                            <Badge variant="outline">{course.credits} Cr</Badge>
+                          </div>
+                          <CardDescription className="mt-1 truncate">{course.name}</CardDescription>
+                        </div>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  toggleSavedCourse(course.id)
+                                }}
+                              >
+                                {isSaved(course.id) ? (
+                                  <BookMarked className="h-4 w-4 text-primary" />
+                                ) : (
+                                  <Bookmark className="h-4 w-4" />
+                                )}
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              {isSaved(course.id) ? "Remove from saved" : "Save for later"}
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="pb-2 flex-1">
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-8 w-8">
+                            <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                              {getInstructorInitials(course.instructor)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="text-sm truncate">{course.instructor}</div>
+                        </div>
+                        <div className="flex items-center text-sm">
+                          <Clock className="mr-2 h-4 w-4 text-muted-foreground flex-shrink-0" />
+                          <span className="truncate">{course.schedule}</span>
+                        </div>
+                        <div className="flex items-center text-sm">
+                          <MapPin className="mr-2 h-4 w-4 text-muted-foreground flex-shrink-0" />
+                          <span className="truncate">{course.location}</span>
+                        </div>
+
+                        {course.prerequisites.length > 0 && (
+                          <div className="flex items-start text-sm">
+                            <Info className="mr-2 h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                            <div className="truncate">
+                              <span className="font-medium">Prerequisites: </span>
+                              <span>{course.prerequisites.join(", ")}</span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                    <CardFooter className="flex justify-between pt-2 mt-auto">
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="outline" size="sm">
+                            <Info className="mr-2 h-4 w-4" />
+                            Details
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[500px]">
+                          <DialogHeader>
+                            <DialogTitle>
+                              {course.code}: {course.name}
+                            </DialogTitle>
+                            <DialogDescription>
+                              {course.department} • Level {course.level} • {course.credits} Credits
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="space-y-4 py-4">
+                            <p className="text-sm">{course.description}</p>
+                            <Separator />
+                            <div className="space-y-2">
+                              <div className="flex items-center text-sm">
+                                <User className="mr-2 h-4 w-4 text-muted-foreground" />
+                                <span>Instructor: {course.instructor}</span>
+                              </div>
+                              <div className="flex items-center text-sm">
+                                <Clock className="mr-2 h-4 w-4 text-muted-foreground" />
+                                <span>{course.schedule}</span>
+                              </div>
+                              <div className="flex items-center text-sm">
+                                <MapPin className="mr-2 h-4 w-4 text-muted-foreground" />
+                                <span>{course.location}</span>
+                              </div>
+                              <div className="flex items-center text-sm">
+                                <GraduationCap className="mr-2 h-4 w-4 text-muted-foreground" />
+                                <span>
+                                  Seats: {course.seats.available} of {course.seats.total} available
+                                </span>
+                              </div>
+                            </div>
+                            {course.prerequisites.length > 0 && (
+                              <>
+                                <Separator />
+                                <div className="space-y-1">
+                                  <h4 className="text-sm font-medium">Prerequisites</h4>
+                                  <ul className="text-sm space-y-1">
+                                    {course.prerequisites.map((prereq) => (
+                                      <li key={prereq} className="flex items-start">
+                                        <ArrowRight className="mr-2 h-4 w-4 text-muted-foreground mt-0.5" />
+                                        <span>{prereq}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                          <DialogFooter>
+                            {isInCart(course.id) ? (
+                              <Button variant="destructive" onClick={() => removeFromCart(course.id)}>
+                                <X className="mr-2 h-4 w-4" />
+                                Remove from Cart
+                              </Button>
+                            ) : (
+                              <Button onClick={() => addToCart(course.id)}>
+                                <ShoppingCart className="mr-2 h-4 w-4" />
+                                Add to Cart
+                              </Button>
+                            )}
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
+
+                      {isInCart(course.id) ? (
+                        <Button variant="destructive" size="sm" onClick={() => removeFromCart(course.id)}>
+                          <X className="mr-2 h-4 w-4" />
+                          Remove
+                        </Button>
+                      ) : (
+                        <Button variant="default" size="sm" onClick={() => addToCart(course.id)}>
+                          <ShoppingCart className="mr-2 h-4 w-4" />
+                          Add to Cart
+                        </Button>
+                      )}
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-12 px-4 border rounded-lg bg-muted/30">
+                <BookOpen className="h-12 w-12 text-muted-foreground mb-3" />
+                <h3 className="text-lg font-medium">No Courses Found</h3>
+                <p className="text-sm text-muted-foreground mt-1 text-center">
+                  No courses match your search criteria. Try adjusting your filters.
+                </p>
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="list" className="mt-0">
+            {filteredCourses.length > 0 ? (
+              <div className="space-y-2">
+                <div className="hidden md:grid grid-cols-12 gap-4 px-4 py-2 bg-muted/40 rounded-md text-sm font-medium">
+                  <div className="col-span-3">Course</div>
+                  <div className="col-span-2">Instructor</div>
+                  <div className="col-span-2">Schedule</div>
+                  <div className="col-span-2">Location</div>
+                  <div className="col-span-1">Credits</div>
+                  <div className="col-span-2">Actions</div>
+                </div>
+                {filteredCourses.map((course) => (
+                  <Card key={course.id} className="overflow-hidden">
+                    <CardContent className="p-4">
+                      <div className="md:grid md:grid-cols-12 md:gap-4 space-y-3 md:space-y-0 items-center">
+                        <div className="md:col-span-3">
+                          <div className="font-medium">
+                            {course.code}: {course.name}
+                          </div>
+                          <div className="text-xs text-muted-foreground md:hidden">
+                            {course.department} • Level {course.level}
+                          </div>
+                        </div>
+                        <div className="md:col-span-2 flex items-center gap-2">
+                          <Avatar className="h-6 w-6 md:hidden">
+                            <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                              {getInstructorInitials(course.instructor)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="text-sm">{course.instructor}</span>
+                        </div>
+                        <div className="md:col-span-2 text-sm flex items-center md:block">
+                          <Clock className="mr-2 h-4 w-4 text-muted-foreground md:hidden" />
+                          {course.schedule}
+                        </div>
+                        <div className="md:col-span-2 text-sm flex items-center md:block">
+                          <MapPin className="mr-2 h-4 w-4 text-muted-foreground md:hidden" />
+                          {course.location}
+                        </div>
+                        <div className="md:col-span-1 text-sm">
+                          <Badge variant="outline">{course.credits}</Badge>
+                        </div>
+                        <div className="md:col-span-2 flex items-center justify-end gap-2">
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button variant="outline" size="sm">
+                                <Info className="h-4 w-4" />
+                                <span className="sr-only md:not-sr-only md:ml-2">Details</span>
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-[500px]">
+                              <DialogHeader>
+                                <DialogTitle>
+                                  {course.code}: {course.name}
+                                </DialogTitle>
+                                <DialogDescription>
+                                  {course.department} • Level {course.level} • {course.credits} Credits
+                                </DialogDescription>
+                              </DialogHeader>
+                              <div className="space-y-4 py-4">
+                                <p className="text-sm">{course.description}</p>
+                                <Separator />
+                                <div className="space-y-2">
+                                  <div className="flex items-center text-sm">
+                                    <User className="mr-2 h-4 w-4 text-muted-foreground" />
+                                    <span>Instructor: {course.instructor}</span>
+                                  </div>
+                                  <div className="flex items-center text-sm">
+                                    <Clock className="mr-2 h-4 w-4 text-muted-foreground" />
+                                    <span>{course.schedule}</span>
+                                  </div>
+                                  <div className="flex items-center text-sm">
+                                    <MapPin className="mr-2 h-4 w-4 text-muted-foreground" />
+                                    <span>{course.location}</span>
+                                  </div>
+                                  <div className="flex items-center text-sm">
+                                    <GraduationCap className="mr-2 h-4 w-4 text-muted-foreground" />
+                                    <span>
+                                      Seats: {course.seats.available} of {course.seats.total} available
+                                    </span>
+                                  </div>
+                                </div>
+                                {course.prerequisites.length > 0 && (
+                                  <>
+                                    <Separator />
+                                    <div className="space-y-1">
+                                      <h4 className="text-sm font-medium">Prerequisites</h4>
+                                      <ul className="text-sm space-y-1">
+                                        {course.prerequisites.map((prereq) => (
+                                          <li key={prereq} className="flex items-start">
+                                            <ArrowRight className="mr-2 h-4 w-4 text-muted-foreground mt-0.5" />
+                                            <span>{prereq}</span>
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  </>
+                                )}
+                              </div>
+                              <DialogFooter>
+                                {isInCart(course.id) ? (
+                                  <Button variant="destructive" onClick={() => removeFromCart(course.id)}>
+                                    <X className="mr-2 h-4 w-4" />
+                                    Remove from Cart
+                                  </Button>
+                                ) : (
+                                  <Button onClick={() => addToCart(course.id)}>
+                                    <ShoppingCart className="mr-2 h-4 w-4" />
+                                    Add to Cart
+                                  </Button>
+                                )}
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+
+                          {isInCart(course.id) ? (
+                            <Button variant="destructive" size="sm" onClick={() => removeFromCart(course.id)}>
+                              <X className="h-4 w-4" />
+                              <span className="sr-only md:not-sr-only md:ml-2">Remove</span>
+                            </Button>
+                          ) : (
+                            <Button variant="default" size="sm" onClick={() => addToCart(course.id)}>
+                              <ShoppingCart className="h-4 w-4" />
+                              <span className="sr-only md:not-sr-only md:ml-2">Add</span>
+                            </Button>
+                          )}
+
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button variant="ghost" size="sm" onClick={() => toggleSavedCourse(course.id)}>
+                                  {isSaved(course.id) ? (
+                                    <BookMarked className="h-4 w-4 text-primary" />
+                                  ) : (
+                                    <Bookmark className="h-4 w-4" />
+                                  )}
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                {isSaved(course.id) ? "Remove from saved" : "Save for later"}
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-12 px-4 border rounded-lg bg-muted/30">
+                <BookOpen className="h-12 w-12 text-muted-foreground mb-3" />
+                <h3 className="text-lg font-medium">No Courses Found</h3>
+                <p className="text-sm text-muted-foreground mt-1 text-center">
+                  No courses match your search criteria. Try adjusting your filters.
+                </p>
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
+      </div>
+
+      {/* Floating Cart Button (Mobile) */}
+      {isMobile && cartItems.length > 0 && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <Drawer>
+            <DrawerTrigger asChild>
+              <Button size="icon" className="h-14 w-14 rounded-full shadow-lg">
+                <ShoppingCart className="h-6 w-6" />
+                <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center">
+                  {cartItems.length}
+                </span>
+              </Button>
+            </DrawerTrigger>
+            <DrawerContent>
+              <DrawerHeader>
+                <DrawerTitle>Registration Cart</DrawerTitle>
+                <DrawerDescription>Review your selected courses</DrawerDescription>
+              </DrawerHeader>
+              <div className="px-4">{renderCartContent()}</div>
+              <DrawerFooter>
+                <DrawerClose asChild>
+                  <Button variant="outline">Close</Button>
+                </DrawerClose>
+              </DrawerFooter>
+            </DrawerContent>
+          </Drawer>
+        </div>
+      )}
+
+      {/* Scroll to Top Button */}
+      {showScrollToTop && (
+        <Button
+          variant="outline"
+          size="icon"
+          className="fixed bottom-4 left-4 z-50 h-10 w-10 rounded-full shadow-md"
+          onClick={scrollToTop}
+        >
+          <ChevronUp className="h-5 w-5" />
+        </Button>
+      )}
     </div>
   )
 }
-

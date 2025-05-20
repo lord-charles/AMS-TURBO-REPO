@@ -10,27 +10,20 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Progress } from "@/components/ui/progress"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
-// Icons
-import { AlertCircle, ArrowRight, BarChart3, Book, BookOpen, Brain, CalendarIcon, Check, ChevronDown, ChevronRight, Clock, Copy, FileText, Filter, Flame, GraduationCap, HelpCircle, Info, Lightbulb, Loader2, Lock, MessageSquare, MoreHorizontal, Pencil, Plus, RefreshCw, Save, Search, Send, Settings, Share, Sparkles, Star, Target, ThumbsDown, ThumbsUp, Timer, Trash, Trophy, Zap } from 'lucide-react'
+import { AlertCircle, ArrowRight, Book, BookOpen, Brain, CalendarIcon, Check,  ChevronRight, Clock, FileText, Filter, Flame, GraduationCap, HelpCircle, Info, Lightbulb, Loader2,  MessageSquare, MoreHorizontal, Pencil, Plus, Save, Search, Settings, Star, Target, Timer, Trash, Trophy, Zap } from 'lucide-react'
 import { ChatInterface } from "../ai-assistant/chat-interface"
 
-// Types
 type MessageType = {
   id: string
   role: "user" | "system" | "assistant"
@@ -104,7 +97,6 @@ type StudySessionType = {
 }
 
 export function AIAssistantTab() {
-  // State
   const [activeTab, setActiveTab] = React.useState("chat")
   const [chatSubTab, setChatSubTab] = React.useState("chat")
   const [isLoading, setIsLoading] = React.useState(false)
@@ -139,7 +131,6 @@ export function AIAssistantTab() {
     },
   ])
 
-  // Mock concepts the student is learning
   const concepts: ConceptType[] = [
     {
       id: "c1",
@@ -669,7 +660,7 @@ export function AIAssistantTab() {
             </div>
           ) : (
             <>
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-3 md:grid-cols-2">
                 <Card>
                   <CardHeader>
                     <CardTitle>Learning Insights</CardTitle>
@@ -1437,7 +1428,7 @@ export function AIAssistantTab() {
               <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
             </div>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-3 md:grid-cols-2">
               <Card className="md:col-span-2">
                 <CardHeader>
                   <CardTitle>AI-Optimized Study Schedule</CardTitle>

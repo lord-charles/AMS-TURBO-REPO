@@ -55,14 +55,13 @@ export function FinancialsTab() {
   const [filterStatus, setFilterStatus] = React.useState("all")
   const isMobile = useMediaQuery("(max-width: 640px)")
   
-  // Mock data for financial statement
   const financialSummary = {
     totalFees: 120000,
     paid: 80000,
     balance: 40000,
     dueDate: "2023-11-30",
     academicYear: "2023/2024",
-    semester: "Fall",
+    semester: "Second",
     paymentPlan: "Installment Plan (3 payments)",
     status: "Partially Paid",
     studentId: "STU2023001",
@@ -117,7 +116,7 @@ export function FinancialsTab() {
       method: "Bank Transfer",
       reference: "TRF23090501",
       status: "completed",
-      description: "First Installment"
+      description: "First Semester"
     },
     {
       id: "pay2",
@@ -126,7 +125,7 @@ export function FinancialsTab() {
       method: "Credit Card",
       reference: "CC23101001",
       status: "completed",
-      description: "Second Installment"
+      description: "Second Semester"
     },
     {
       id: "pay3",
@@ -135,7 +134,7 @@ export function FinancialsTab() {
       method: "Pending",
       reference: "-",
       status: "pending",
-      description: "Third Installment (Due)"
+      description: "Third Semester (Due)"
     }
   ]
   
@@ -189,7 +188,7 @@ export function FinancialsTab() {
       dueDate: "2023-09-15",
       amount: 50000,
       status: "paid",
-      description: "Fall 2023 - First Installment"
+      description: "2023 - First Semester"
     },
     {
       id: "inv2",
@@ -197,7 +196,7 @@ export function FinancialsTab() {
       dueDate: "2023-10-15",
       amount: 30000,
       status: "paid",
-      description: "Fall 2023 - Second Installment"
+      description: "2023 - Second Semester"
     },
     {
       id: "inv3",
@@ -205,7 +204,7 @@ export function FinancialsTab() {
       dueDate: "2023-11-30",
       amount: 40000,
       status: "unpaid",
-      description: "Fall 2023 - Third Installment"
+      description: "2023 - Third Semester"
     }
   ]
 
@@ -317,7 +316,6 @@ export function FinancialsTab() {
     e.preventDefault()
     setIsLoading(true)
     
-    // Simulate payment processing
     setTimeout(() => {
       setIsLoading(false)
       setPaymentDialogOpen(false)
@@ -336,7 +334,6 @@ export function FinancialsTab() {
     return matchesSearch && matchesFilter
   })
   
-  // Simulate loading when changing tabs
   React.useEffect(() => {
     setIsLoading(true)
     const timer = setTimeout(() => {
@@ -345,7 +342,6 @@ export function FinancialsTab() {
     return () => clearTimeout(timer)
   }, [activeSubTab])
 
-  // Check if payment is overdue
   const isPaymentOverdue = (dueDate: string) => {
     return isAfter(new Date(), new Date(dueDate))
   }

@@ -1,4 +1,3 @@
-"use client"
 
 import { useState, useEffect, useMemo } from "react"
 import {
@@ -105,11 +104,9 @@ export function ExamsView({ searchQuery: initialSearchQuery, semester }: ExamsVi
     minutes: 0,
     seconds: 0,
   })
-  const isMobile = useMediaQuery("(max-width: 768px)")
   const { toast } = useToast()
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery)
 
-  // Mock exams data with Kenyan university context
   const exams: Exam[] = [
     {
       id: "exam1",
@@ -452,7 +449,6 @@ export function ExamsView({ searchQuery: initialSearchQuery, semester }: ExamsVi
     },
   ]
 
-  // Simulate loading
   useEffect(() => {
     setIsLoading(true)
     const timer = setTimeout(() => {
@@ -461,7 +457,6 @@ export function ExamsView({ searchQuery: initialSearchQuery, semester }: ExamsVi
     return () => clearTimeout(timer)
   }, [])
 
-  // Update countdown for selected exam
   useEffect(() => {
     if (!selectedExam) return
 
@@ -710,7 +705,7 @@ export function ExamsView({ searchQuery: initialSearchQuery, semester }: ExamsVi
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-2">
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
